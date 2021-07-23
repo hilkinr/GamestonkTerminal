@@ -25,6 +25,8 @@ class ScreenerController:
 
     # Command choices
     CHOICES = [
+        "cls",
+        "?",
         "help",
         "q",
         "quit",
@@ -53,9 +55,12 @@ class ScreenerController:
 
     def print_help(self):
         """Print help"""
-
+        print(
+            "https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/screener"
+        )
         print("\nScreener:")
-        print("   help          show this screener menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("")
@@ -148,7 +153,7 @@ class ScreenerController:
                             description += line.strip()
                     print(f"\nPRESET: {preset}")
                     print(description.split("Description: ")[1].replace("#", ""))
-                    print("")
+                print("")
 
         except Exception as e:
             print(e)
@@ -202,7 +207,23 @@ class ScreenerController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.scr_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"

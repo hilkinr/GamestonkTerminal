@@ -48,8 +48,8 @@ DG_PASSWORD = os.getenv("GT_DG_PASSWORD") or "REPLACE_ME"
 DG_TOTP_SECRET = os.getenv("GT_DG_TOTP_SECRET") or None
 
 # https://developer.oanda.com
-OANDA_ACCOUNT = os.getenv("GT_OANDA_ACCOUNT") or "REPLACE ME"
-OANDA_TOKEN = os.getenv("GT_OANDA_TOKEN") or "REPLACE ME"
+OANDA_ACCOUNT = os.getenv("GT_OANDA_ACCOUNT") or "REPLACE_ME"
+OANDA_TOKEN = os.getenv("GT_OANDA_TOKEN") or "REPLACE_ME"
 
 # https://tradier.com/products/market-data-api
 TRADIER_TOKEN = os.getenv("GT_API_TRADIER_TOKEN") or "REPLACE_ME"
@@ -67,3 +67,6 @@ API_BINANCE_SECRET = os.getenv("GT_API_BINANCE_SECRET") or "REPLACE_ME"
 
 # https://finnhub.io
 API_FINNHUB_KEY = os.getenv("GT_API_FINNHUB_KEY") or "REPLACE_ME"
+
+# https://iexcloud.io
+API_IEX_TOKEN = os.getenv("GT_API_IEX_KEY") or "REPLACE_ME"

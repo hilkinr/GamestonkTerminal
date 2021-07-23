@@ -2,6 +2,8 @@
 
 This menu aims to assess economy data, and the usage of the following commands along with an example will be exploited below.
 
+* [feargreed](#feargreed)
+    * CNN Fear Greed Index from https://money.cnn.com/data/fear-and-greed/
 * [events](#events)
     * economic impact events [Finnhub]
 * [fred](#fred)
@@ -28,6 +30,33 @@ This menu aims to assess economy data, and the usage of the following commands a
     * Moody's Seasoned AAA Corporate Bond Yield
 * [dexcaus](#dexcaus)
     * Canada / U.S. Foreign Exchange Rate (CAD per 1 USD)
+
+[WSJ](#wsj)
+* [overview](#overview)
+  * Get market overview
+* [indices](#indices)
+  * Get us major indices overview
+* [futures](#futures)
+  * Get top futures overview
+* [us_bonds](#us_bonds)
+  * Get us bonds overview
+* [gl_bonds](#gl_bonds)
+  * Get global bonds overview
+* [currencies](#currencies)
+  * Get global currency overview
+
+
+## feargreed <a name="feargreed"></a>
+```text
+usage: feargreed [-i {jbd,mv,pco,mm,sps,spb,shd,index}]
+```
+
+Display CNN Fear And Greed Index from https://money.cnn.com/data/fear-and-greed/.
+* -i : CNN Fear And Greed indicator or index. From Junk Bond Demand, Market Volatility, Put and Call Options, Market Momentum Stock Price, Strength, Stock Price Breadth, Safe Heaven Demand, and Index. Default: None, shows all.
+
+![feargreed](https://user-images.githubusercontent.com/25267873/122684285-7338d400-d1fc-11eb-8702-d409d96a2672.png)
+
+<img width="962" alt="Captura de ecrã 2021-06-20, às 19 18 12" src="https://user-images.githubusercontent.com/25267873/122684256-4a184380-d1fc-11eb-939c-d8007310324d.png">
 
 
 ## events <a name="events"></a>
@@ -197,3 +226,42 @@ Canada / U.S. Foreign Exchange Rate (CAD per 1 USD)
 * -t : Only output text data.
 
 ![dexcaus](https://user-images.githubusercontent.com/25267873/116769155-10b02c80-aa32-11eb-8ece-d8e92b8df1af.png)
+
+# WSJ <a name="wsj"></a>
+The following functions are meant to take the information from the [WSJ Market Data Page](https://www.wsj.com/market-data)
+
+## overview <a name="overview"></a>
+```python
+usage: overview
+```
+Market overview
+
+## indices <a name="indices"></a>
+```python
+usage: indices
+```
+US indices overview
+
+## futures <a name="futures"></a>
+```python
+usage: futures
+```
+Top futures/commodities overview
+
+## us_bonds <a name="us_bonds"></a>
+```python
+usage: us_bonds
+```
+US bonds overview
+
+## gl_bonds <a name="gl_bonds"></a>
+```python
+usage: gl_bonds
+```
+Global bonds overview
+
+## currencies <a name="currencies"></a>
+```python
+usage: currencies
+```
+Global currencies overview

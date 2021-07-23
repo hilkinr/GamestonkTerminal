@@ -12,3 +12,5 @@ notebooks/reports/*
 reports/*
 !notebooks/reports/.gitkeep
 .python-version
+exports/*
+.idea

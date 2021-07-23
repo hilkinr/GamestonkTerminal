@@ -3,19 +3,21 @@
 __docformat__ = "numpy"
 
 import argparse
-
+import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 import pandas as pd
 import yfinance as yf
 from alpha_vantage.timeseries import TimeSeries
 from prompt_toolkit.completion import NestedCompleter
 
-from gamestonk_terminal.helper_funcs import b_is_stock_market_open, get_flair
+from gamestonk_terminal.helper_funcs import (
+    b_is_stock_market_open,
+    get_flair,
+)
 from gamestonk_terminal.main_helper import (
     clear,
-    export,
     load,
     view,
     candle,
@@ -25,6 +27,7 @@ from gamestonk_terminal.main_helper import (
     about_us,
     bootup,
     reset,
+    check_api_keys,
 )
 from gamestonk_terminal.menu import session
 from gamestonk_terminal import config_terminal as cfg
@@ -51,11 +54,15 @@ from gamestonk_terminal.resource_collection import rc_controller
 from gamestonk_terminal.research import res_controller
 from gamestonk_terminal.government import gov_controller
 from gamestonk_terminal.etf import etf_controller
+from gamestonk_terminal.insider import insider_controller
 
 
 # pylint: disable=too-many-public-methods
 class TerminalController:
     """Terminal Controller class"""
+
+    # To hold suffix for Yahoo Finance
+    suffix = ""
 
     # Command choices
     CHOICES_TICKER_DEPENDENT = [
@@ -68,11 +75,12 @@ class TerminalController:
         "eda",
         "pred",
         "ca",
-        "op",
         "ra",
     ]
 
     CHOICES = [
+        "cls",
+        "?",
         "help",
         "quit",
         "q",
@@ -83,7 +91,6 @@ class TerminalController:
         "quote",
         "candle",
         "view",
-        "export",
         "disc",
         "scr",
         "mill",
@@ -91,12 +98,16 @@ class TerminalController:
         "pa",
         "crypto",
         "po",
+        "ins",
         "fx",
         "rc",
+        "op",
         "gov",
         "etf",
         "about",
         "bro",
+        "ins",
+        "keys",
     ]
     CHOICES += CHOICES_TICKER_DEPENDENT
 
@@ -127,14 +138,15 @@ class TerminalController:
         """Print help"""
         help_text = """
 What do you want to do?
-    help        help to see this menu again
+    cls         clear screen
+    ?/help      show this menu again
     update      update terminal from remote
+    keys        check for defined api keys
     reset       reset terminal and reload configs
     about       about us
     q(uit)      to abandon the program
 
 Contexts:
->   scr         screener stocks, \t\t e.g. overview/performance, using preset filters
 >   mill        papermill menu, \t\t menu to generate notebook reports
 >   econ        economic data, \t\t\t e.g.: events, FRED data, GDP, VIXCLS
 >   pa          portfolio analysis, \t\t analyses your custom portfolio
@@ -145,6 +157,8 @@ Contexts:
 >   etf         etf menu, \t\t\t from: StockAnalysis.com
 >   fx          forex menu, \t\t\t forex support through Oanda
 >   rc          resource collection, \t\t e.g. hf letters, arXiv, EDGAR, FINRA
+>   op          options info,            \t e.g.: volume, open interest, chains, volatility
+>   ins         insider trading,         \t e.g.: latest penny stock buys, insider sales
             """
 
         s_intraday = (f"Intraday {self.interval}", "Daily")[self.interval == "1440min"]
@@ -160,19 +174,17 @@ Contexts:
         help_text += """
     clear       clear a specific stock ticker from analysis
     load        load a specific stock ticker for analysis
-    quote       view the current price for a specific stock ticker
-    candle      view a candle chart for a specific stock ticker
-    view        view and load a specific stock ticker for technical analysis
     """
 
         if self.ticker:
-            help_text += """export      export the currently loaded dataframe to a file or stdout
+            help_text += """quote       view the current price for a specific stock ticker
+    candle      view a candle chart for a specific stock ticker
+    view        view and load a specific stock ticker for technical analysis
 
 >   dd          in-depth due-diligence,  \t e.g.: news, analyst, shorts, insider, sec
 >   ba          behavioural analysis,    \t from: reddit, stocktwits, twitter, google
 >   ta          technical analysis,      \t e.g.: ema, macd, rsi, adx, bbands, obv
 >   fa          fundamental analysis,    \t e.g.: income, balance, cash, earnings
->   op          options info,            \t e.g.: volume, open interest, chains, volatility
 >   res         research web page,       \t e.g.: macroaxis, yahoo finance, fool
 >   ca          comparison analysis,     \t e.g.: historical, correlation, financials
 >   eda         exploratory data analysis,\t e.g.: decompose, cusum, residuals analysis
@@ -180,7 +192,10 @@ Contexts:
 >   bt          strategy backtester,      \t e.g.: simple ema, ema cross, rsi strategies
 >   pred        prediction techniques,   \t e.g.: regression, arima, rnn, lstm"""
 
-        help_text += "\n>   disc        discover trending stocks, \t e.g. map, sectors, high short interest\n"
+        help_text += """\n>   disc        discover trending stocks, \t e.g. map, sectors, high short interest
+>   scr         screener stocks, \t\t e.g. overview/performance, using preset filters
+        """
+
         print(help_text)
 
     def switch(self, an_input: str):
@@ -194,11 +209,26 @@ Contexts:
             None - continue in the menu
         """
 
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         if not self.ticker and an_input in self.CHOICES_TICKER_DEPENDENT:
             print("No ticker selected. Use 'load <ticker>'.\n")
             return None
 
         (known_args, other_args) = self.t_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"
@@ -232,26 +262,26 @@ Contexts:
             other_args, self.ticker, self.start, self.interval, self.stock
         )
         if "." in self.ticker:
-            self.ticker = self.ticker.split(".")[0]
+            self.ticker, self.suffix = self.ticker.split(".")
+        else:
+            self.suffix = ""
 
     def call_quote(self, other_args: List[str]):
         """Process quote command"""
-        quote(other_args, self.ticker)
+        quote(
+            other_args, self.ticker + "." + self.suffix if self.suffix else self.ticker
+        )
 
-    def call_candle(self, _):
+    def call_candle(self, other_args: List[str]):
         """Process candle command"""
         candle(
-            self.ticker,
-            (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d"),
+            self.ticker + "." + self.suffix if self.suffix else self.ticker,
+            other_args,
         )
 
     def call_view(self, other_args: List[str]):
         """Process view command"""
-        view(other_args, self.ticker, self.start, self.interval, self.stock)
-
-    def call_export(self, other_args: List[str]):
-        """Process export command"""
-        export(other_args, self.stock)
+        view(other_args, self.ticker, self.interval, self.stock)
 
     def call_disc(self, _):
         """Process disc command"""
@@ -293,6 +323,10 @@ Contexts:
         """Process etf command"""
         return etf_controller.menu()
 
+    def call_ins(self, _):
+        """Process ins command"""
+        return insider_controller.menu()
+
     def call_gov(self, _):
         """Process gov command"""
         return gov_controller.menu(self.ticker)
@@ -305,6 +339,10 @@ Contexts:
         """Process update command"""
         self.update_succcess = not update_terminal()
         return True
+
+    def call_keys(self, _):
+        """Process keys command"""
+        check_api_keys()
 
     def call_about(self, _):
         """Process about command"""
@@ -382,16 +420,6 @@ Contexts:
             )
 
         df_stock = yf.download(self.ticker, start=self.start, progress=False)
-        df_stock = df_stock.rename(
-            columns={
-                "Open": "1. open",
-                "High": "2. high",
-                "Low": "3. low",
-                "Close": "4. close",
-                "Adj Close": "5. adjusted close",
-                "Volume": "6. volume",
-            }
-        )
         df_stock.index.name = "date"
         s_interval = "1440min"
 
@@ -411,16 +439,6 @@ Contexts:
             )
 
         df_stock = yf.download(self.ticker, start=self.start, progress=False)
-        df_stock = df_stock.rename(
-            columns={
-                "Open": "1. open",
-                "High": "2. high",
-                "Low": "3. low",
-                "Close": "4. close",
-                "Adj Close": "5. adjusted close",
-                "Volume": "6. volume",
-            }
-        )
 
         return op_controller.menu(
             self.ticker,
@@ -440,7 +458,7 @@ Contexts:
             # pylint: disable=import-outside-toplevel
             from gamestonk_terminal.prediction_techniques import pred_controller
         except ModuleNotFoundError as e:
-            print("One of the optional packages seems to be missing", "\n", e)
+            print("One of the optional packages seems to be missing: ", e, "\n")
             return None
         except Exception as e:
             print(e, "\n")
@@ -464,6 +482,7 @@ Contexts:
             df_stock_pred, _ = ts.get_daily_adjusted(
                 symbol=self.ticker, outputsize="full"
             )
+
             # pylint: disable=no-member
             df_stock_pred = df_stock_pred.sort_index(ascending=True)
             df_stock_pred = df_stock_pred[self.start :]

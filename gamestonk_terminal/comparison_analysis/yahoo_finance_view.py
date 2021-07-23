@@ -75,9 +75,9 @@ def historical(
     similar : List[str]
         List of similar tickers
     """
-
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="historical",
         description="""Historical price comparison between similar companies [Source: Yahoo Finance]
         """,
@@ -128,7 +128,7 @@ def historical(
             plt.plot(
                 df_stock.index, df_stock[d_candle_types[ns_parser.type_candle]].values
             )
-            # plt.plot(df_stock.index, df_stock["5. adjusted close"].values, lw=2)
+            # plt.plot(df_stock.index, df_stock["Adj Close"].values, lw=2)
             l_min = [df_stock.index[0]]
             l_leg = [ticker]
 
@@ -183,7 +183,9 @@ def historical(
 
 
 def correlation(other_args, df_stock, ticker, start, interval, similar):
-    """[summary]
+    """
+    Correlation heatmap based on historical price comparison
+    between similar companies. [Source: Yahoo Finance]
 
     Parameters
     ----------
@@ -203,6 +205,7 @@ def correlation(other_args, df_stock, ticker, start, interval, similar):
 
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="corr",
         description=""" Correlation heatmap based on historical price comparison between similar
         companies. [Source: Yahoo Finance]
@@ -265,7 +268,7 @@ def correlation(other_args, df_stock, ticker, start, interval, similar):
                 df_stock = d_stock[ticker][
                     d_candle_types[ns_parser.type_candle]
                 ].rename(ticker)
-                for symbol in d_stock:
+                for symbol in d_stock.items():
                     if symbol != ticker:
                         if not d_stock[symbol].empty:
                             df_stock = pd.concat(
@@ -293,7 +296,6 @@ def correlation(other_args, df_stock, ticker, start, interval, similar):
                 )
                 plt.title("Correlation Heatmap")
                 plt.show()
-
         print("")
 
     except SystemExit:

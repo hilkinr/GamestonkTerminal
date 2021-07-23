@@ -2,8 +2,8 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 import webbrowser
-from typing import List
 from prompt_toolkit.completion import NestedCompleter
 from gamestonk_terminal import feature_flags as gtff
 from gamestonk_terminal.helper_funcs import get_flair
@@ -15,6 +15,8 @@ class ResourceCollectionController:
 
     # Command choices
     CHOICES = [
+        "cls",
+        "?",
         "help",
         "q",
         "quit",
@@ -37,9 +39,12 @@ class ResourceCollectionController:
     @staticmethod
     def print_help():
         """Print help"""
-
+        print(
+            "https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/resource_collection"
+        )
         print("\nResources:")
-        print("   help          show this behavioural analysis menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("")
@@ -61,7 +66,23 @@ class ResourceCollectionController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.rc_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         if other_args:
             print(f"The following args were unexpected: {other_args}")
@@ -82,32 +103,32 @@ class ResourceCollectionController:
         """Process Quit command - quit the program"""
         return True
 
-    def call_hfletters(self, other_args: List[str]):
+    def call_hfletters(self, _):
         """Process hfletters command"""
         webbrowser.open("https://miltonfmr.com/hedge-fund-letters/")
         print("")
 
-    def call_arxiv(self, other_args: List[str]):
+    def call_arxiv(self, _):
         """Process arxiv command"""
         webbrowser.open("https://arxiv.org")
         print("")
 
-    def call_finra(self, other_args: List[str]):
+    def call_finra(self, _):
         """Process finra command"""
         webbrowser.open("https://www.finra.org/#/")
         print("")
 
-    def call_edgar(self, other_args: List[str]):
+    def call_edgar(self, _):
         """Process edgar command"""
         webbrowser.open("https://www.sec.gov/edgar.shtml")
         print("")
 
-    def call_fred(self, other_args: List[str]):
+    def call_fred(self, _):
         """Process fred command"""
         webbrowser.open("https://fred.stlouisfed.org")
         print("")
 
-    def call_learn(self, other_args: List[str]):
+    def call_learn(self, _):
         """Process learn command"""
         webbrowser.open("https://moongangcapital.com/free-stock-market-resources/")
         print("")

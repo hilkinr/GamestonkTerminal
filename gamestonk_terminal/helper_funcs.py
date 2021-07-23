@@ -1,6 +1,7 @@
 """Helper functions"""
 __docformat__ = "numpy"
 import argparse
+from typing import List
 from datetime import datetime, timedelta, time as Time
 import os
 import random
@@ -27,6 +28,23 @@ if cfgPlot.BACKEND is not None:
 
 
 def check_valid_path(path: str) -> str:
+    """Argparse type function to test is path is valid
+
+    Parameters
+    ----------
+    path: str
+        Path supplied
+
+    Returns
+    -------
+    path: str
+        Valid path
+
+    Raises
+    -------
+    argparse.ArgumentTypeError
+        Given path does not exist
+    """
     if not os.path.exists(
         os.path.abspath(
             os.path.join(
@@ -38,14 +56,41 @@ def check_valid_path(path: str) -> str:
     return path
 
 
-def check_int_range(mini, maxi):
-    """
-    Checks if argparse argument is an int between 2 values.
-    https://stackoverflow.com/questions/55324449/how-to-specify-a-minimum-or-maximum-float-value-with-argparse
+def check_int_range(mini: int, maxi: int):
+    """Checks if argparse argument is an int between 2 values.
+
+    Parameters
+    ----------
+    mini: int
+        Min value to compare
+    maxi: int
+        Max value to compare
+
+    Returns
+    -------
+    int_range_checker:
+        Function that compares the three integers
     """
 
     # Define the function with default arguments
-    def int_range_checker(num) -> int:
+    def int_range_checker(num: int) -> int:
+        """Checks if int is between a high and low value
+
+        Parameters
+        ----------
+        num: int
+            Input integer
+
+        Returns
+        -------
+        num: int
+            Input number if conditions are met
+
+        Raises
+        -------
+        argparse.ArgumentTypeError
+            Input number not between min and max values
+        """
         num = int(num)
         if num < mini or num > maxi:
             raise argparse.ArgumentTypeError(f"must be in range [{mini},{maxi}]")
@@ -93,9 +138,16 @@ def plot_view_stock(df: pd.DataFrame, symbol: str, interval: str):
 
     """
     df.sort_index(ascending=True, inplace=True)
+    bar_colors = ["r" if x[1].Open < x[1].Close else "g" for x in df.iterrows()]
 
     try:
-        _, axVolume = plt.subplots(figsize=plot_autoscale(), dpi=cfgPlot.PLOT_DPI)
+        fig, ax = plt.subplots(
+            2,
+            1,
+            gridspec_kw={"height_ratios": [3, 1]},
+            figsize=plot_autoscale(),
+            dpi=cfgPlot.PLOT_DPI,
+        )
     except Exception as e:
         print(e)
         print(
@@ -106,24 +158,47 @@ def plot_view_stock(df: pd.DataFrame, symbol: str, interval: str):
     # In order to make nice Volume plot, make the bar width = interval
     if interval == "1440min":
         bar_width = timedelta(days=1)
+        title_string = "Daily"
     else:
         bar_width = timedelta(minutes=int(interval.split("m")[0]))
+        title_string = f"{int(interval.split('m')[0])} min"
 
-    plt.bar(df.index, df.iloc[:, -1], color="k", alpha=0.8, width=bar_width)
-    plt.ylabel("Volume")
-    _ = axVolume.twinx()
-    plt.plot(df.index, df.iloc[:, :-1])
-    plt.title(symbol.upper() + " (Time Series)")
-    plt.xlim(df.index[0], df.index[-1])
-    plt.xlabel("Time")
-    plt.ylabel("Share Price ($)")
-    plt.legend(df.columns)
-    plt.grid(b=True, which="major", color="#666666", linestyle="-")
-    plt.minorticks_on()
-    plt.grid(b=True, which="minor", color="#999999", linestyle="-", alpha=0.2)
+    ax[0].yaxis.tick_right()
+    if "Adj Close" in df.columns:
+        ax[0].plot(df.index, df["Adj Close"], c=cfgPlot.VIEW_COLOR)
+    else:
+        ax[0].plot(df.index, df["Close"], c=cfgPlot.VIEW_COLOR)
+    ax[0].set_xlim(df.index[0], df.index[-1])
+    ax[0].set_xticks([])
+    ax[0].yaxis.set_label_position("right")
+    ax[0].set_ylabel("Share Price ($)")
+    ax[0].grid(axis="y", color="gainsboro", linestyle="-", linewidth=0.5)
 
+    ax[0].spines["top"].set_visible(False)
+    ax[0].spines["left"].set_visible(False)
+    ax[1].bar(
+        df.index, df.Volume / 1_000_000, color=bar_colors, alpha=0.8, width=bar_width
+    )
+    ax[1].set_xlim(df.index[0], df.index[-1])
+    ax[1].yaxis.tick_right()
+    ax[1].yaxis.set_label_position("right")
+    ax[1].set_ylabel("Volume (1M)")
+    ax[1].grid(axis="y", color="gainsboro", linestyle="-", linewidth=0.5)
+    ax[1].spines["top"].set_visible(False)
+    ax[1].spines["left"].set_visible(False)
+    ax[1].set_xlabel("Time")
+    fig.suptitle(
+        symbol + " " + title_string,
+        size=20,
+        x=0.15,
+        y=0.95,
+        fontfamily="serif",
+        fontstyle="italic",
+    )
     if gtff.USE_ION:
         plt.ion()
+    fig.tight_layout(pad=2)
+    plt.setp(ax[1].get_xticklabels(), rotation=20, horizontalalignment="right")
 
     plt.show()
     print("")
@@ -407,7 +482,21 @@ def patch_pandas_text_adjustment():
     pandas.io.formats.format.TextAdjustment.adjoin = text_adjustment_adjoin
 
 
-def parse_known_args_and_warn(parser, l_args):
+def parse_known_args_and_warn(parser: argparse.ArgumentParser, other_args: List[str]):
+    """Parses list of arguments into the supplied parser
+
+    Parameters
+    ----------
+    parser: argparse.ArgumentParser
+        Parser with predefined arguments
+    other_args: List[str]
+        List of arguments to parse
+
+    Returns
+    -------
+    ns_parser:
+        Namespace with parsed arguments
+    """
     parser.add_argument(
         "-h", "--help", action="store_true", help="show this help message"
     )
@@ -415,7 +504,7 @@ def parse_known_args_and_warn(parser, l_args):
     if gtff.USE_CLEAR_AFTER_CMD:
         os.system("cls||clear")
 
-    (ns_parser, l_unknown_args) = parser.parse_known_args(l_args)
+    (ns_parser, l_unknown_args) = parser.parse_known_args(other_args)
 
     if ns_parser.help:
         parser.print_help()
@@ -456,15 +545,6 @@ def lett_to_num(word: str) -> str:
     for (a, b) in replacements:
         word = word.replace(a, b)
     return word
-
-
-def check_sources(source: str) -> str:
-    available_historical_price_sources = ["yf", "av"]
-    if source in available_historical_price_sources:
-        return source
-    raise argparse.ArgumentTypeError(
-        "This source for historical data is not available."
-    )
 
 
 def get_flair() -> str:
@@ -608,3 +688,40 @@ def find_tickers(submission):
             l_tickers_found.append(s_ticker.strip())
 
     return l_tickers_found
+
+
+def export_data(export_type: str, dir_path: str, func_name: str, df: pd.DataFrame):
+    """Export data to a file.
+
+    Parameters
+    ----------
+    export_type : str
+        Type of export between: csv,json,xlsx,xls
+    dir_path : str
+        Path of directory from where this function is called
+    func_name : str
+        Name of the command that invokes this function
+    df : pd.Dataframe
+        Datframe containing the data
+    """
+    if export_type:
+        export_dir = dir_path.replace("gamestonk_terminal", "exports")
+
+        now = datetime.now()
+        full_path = os.path.abspath(
+            os.path.join(
+                export_dir,
+                f"{func_name}_{now.strftime('%Y%m%d_%H%M%S')}.{export_type}",
+            )
+        )
+
+        if export_type == "csv":
+            df.to_csv(full_path)
+        elif export_type == "json":
+            df.to_json(full_path)
+        elif export_type in "xlsx":
+            df.to_excel(full_path, index=True, header=True)
+        else:
+            print("Wrong export file specified.\n")
+
+        print(f"Saved file: {full_path}\n")

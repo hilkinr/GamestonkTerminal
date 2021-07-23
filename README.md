@@ -15,8 +15,8 @@
 [![Bugs Open][bugs-open-shield]][bugs-open-url]
 [![Bugs Closed][bugs-closed-shield]][bugs-closed-url]
 
-[![Build Status](https://github.com/DidierRLopes/GamestonkTerminal/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/DidierRLopes/GamestonkTerminal/actions)
-[![GitHub release](https://img.shields.io/github/release/DidierRLopes/GamestonkTerminal.svg?maxAge=3600)](https://github.com/DidierRLopes/GamestonkTerminal/releases)
+[![Build Status](https://github.com/GamestonkTerminal/GamestonkTerminal/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/GamestonkTerminal/GamestonkTerminal/actions)
+[![GitHub release](https://img.shields.io/github/release/GamestonkTerminal/GamestonkTerminal.svg?maxAge=3600)](https://github.com/GamestonkTerminal/GamestonkTerminal/releases)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ![Discord Shield](https://discordapp.com/api/guilds/831165782750789672/widget.png?style=shield)
@@ -25,7 +25,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/DidierRLopes/GamestonkTerminal">
+  <a href="https://github.com/GamestonkTerminal/GamestonkTerminal">
     <img src="images/gst_logo_lockup_rGreen_with_letters.png" alt="Logo" width="800" height="276">
   </a>
 
@@ -34,16 +34,16 @@
   <p align="center">
     The next best thing after Bloomberg Terminal. #weliketheterminal
     <br />
-    <a href="https://github.com/DidierRLopes/GamestonkTerminal/blob/main/ROADMAP.md"><strong>≪  ROADMAP</strong></a>
+    <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/blob/main/ROADMAP.md"><strong>≪  ROADMAP</strong></a>
     &nbsp · &nbsp
-    <a href="https://github.com/DidierRLopes/GamestonkTerminal/tree/main/gamestonk_terminal/README.md"><strong>FEATURES »</strong></a>
+    <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/README.md"><strong>FEATURES »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/DidierRLopes/GamestonkTerminal/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBug%5D">Report Bug</a>
+    <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBug%5D">Report Bug</a>
     ·
-    <a href="https://github.com/DidierRLopes/GamestonkTerminal/issues/new?assignees=&labels=enhancement&template=enhancement.md&title=%5BIMPROVE%5D">Suggest Improvement</a>
+    <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/issues/new?assignees=&labels=enhancement&template=enhancement.md&title=%5BIMPROVE%5D">Suggest Improvement</a>
     ·
-    <a href="https://github.com/DidierRLopes/GamestonkTerminal/issues/new?assignees=&labels=new+feature&template=feature_request.md&title=%5BFR%5D">Request Feature</a>
+    <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/issues/new?assignees=&labels=new+feature&template=feature_request.md&title=%5BFR%5D">Request Feature</a>
   </p>
 </p>
 
@@ -85,13 +85,13 @@ As a modern Python-based environment, GamestonkTerminal opens access to numerous
 
 ## Donation
 
-GST is a completely free open-source terminal. My personal goal has always been to keep this terminal available for everyone to use at zero cost.
+Gamestonk Terminal is a free Open-Source Software. This means that the entire codebase is public, and any user can use it for free.
 
-Lately, some developers have been helping me in this endeavour. As you can probably tell from the git history, the terminal has been increasing in features/robustness at a really fast pace. Since none of us are getting paid to do so, and we all have 9-5 jobs, it's hard to onbard people to work towards the cause. On a personal level, I stopped investing since the repository was made public, since I spend all my spare time working on it, and don't have time left for DD.
+A small team of us are consistently working to provide as many updates to the project as we can, and this is done out of hours, often late nights to improve this tool. Whilst we don't earn any money from Gamestonk Terminal, we want to make sure that all our users can make the best investments from our software. As we continue to build on this project, we would really appreciate any type of donation or support so we can buy more coffees to fuel us even more!
 
-There are many ways to help support GST. If technical development or support are one of your strengths, join our [discord](https://discord.gg/Up2QGbMKHY). Otherwise, you could certainly help us by providing a donation to our coinbase crypto wallet: **3Pfx7NwGgmZsk7hQJxzHdp5rGBftUHVTiM**.
+Here's our Patreon page: https://www.patreon.com/gamestonkterminal
 
-Sharing the terminal with friends and family would also go a long way. Thanks in advance ape.
+There are many ways to help support GST. If you want to help, non-monetarily, join our [discord](https://discord.gg/Up2QGbMKHY). Sharing the terminal with friends would also go a long way. Thanks in advance ape.
 
 ## Getting Started
 
@@ -108,7 +108,7 @@ Our current recommendation is to use this project with Anaconda's Python distrib
 0. Star the project
 <img width="1272" alt="Captura de ecrã 2021-04-25, às 01 13 30" src="https://user-images.githubusercontent.com/25267873/115989986-e20cfe80-a5b8-11eb-8182-d6d87d092252.png">
 
-1. Install Anaconda
+1. [Install Anaconda](https://docs.anaconda.com/anaconda/install/index.html) (It's on the AUR as anaconda or miniconda3!)
 
 Confirm that you have it with: `conda -V`. The output should be something along the lines of: `conda 4.9.2`
 
@@ -122,8 +122,8 @@ conda install -c anaconda git
 
 3. Clone the Project
 
-  - Via HTTPS: `git clone https://github.com/DidierRLopes/GamestonkTerminal.git`
-  - via SSH:  `git clone git@github.com:DidierRLopes/GamestonkTerminal.git`
+  - Via HTTPS: `git clone https://github.com/GamestonkTerminal/GamestonkTerminal.git`
+  - via SSH:  `git clone git@github.com:GamestonkTerminal/GamestonkTerminal.git`
 
 4. Navigate into the project's folder
 
@@ -153,7 +153,11 @@ Note: At the end, you can deactivate it with: `conda deactivate`.
 poetry install
 ```
 
-This is a library for package management, and ensures a smoother experience than: ``pip install -r requirements.txt``
+If you are having trouble with Poetry (e.g. on a Windows system), simply install requirements.txt with pip
+
+```
+pip install -r requirements.txt
+```
 
 8.  You're ready to Gamestonk it!
 
@@ -167,7 +171,7 @@ After you've installed Gamestonk Terminal, you'll find a file named "Gamestonk T
 
 **NOTE:** When you close the terminal and re-open it, the only command you need to re-call is `conda activate gst` before you call `python terminal.py` again.
 
-**TROUBLESHOOT:** If you are having troubles to install, check our *newest* <a href="https://github.com/DidierRLopes/GamestonkTerminal/blob/main/TROUBLESHOOT.md"><strong>troubleshoot page</strong></a>
+**TROUBLESHOOT:** If you are having troubles to install, check our *newest* <a href="https://github.com/GamestonkTerminal/GamestonkTerminal/blob/main/TROUBLESHOOT.md"><strong>troubleshoot page</strong></a>
 
 ### Advanced User Install - Machine Learning
 
@@ -315,6 +319,8 @@ Example:
 
 There are 3 main ways of contributing to this project.
 
+For a 1h coding session where the architecture of the repo is explained while a new feature is added, check https://www.youtube.com/watch?v=9BMI9cleTTg.
+
 **Become a Contributor 🦍**
 
 Recommended if you bought the dip, and the share price keeps dipping. You may as well keep yourself busy while stonks go up.
@@ -333,9 +339,9 @@ Recommended if you bought the dip, and the share price keeps dipping. You may as
 
 Recommended if you adopted a strategy of buying high and selling low.
 
-We are interested in your view on what sort of [features](https://github.com/DidierRLopes/GamestonkTerminal/issues) would make you buy even higher and selling even lower.
+We are interested in your view on what sort of [features](https://github.com/GamestonkTerminal/GamestonkTerminal/issues) would make you buy even higher and selling even lower.
 
-Also, if somehow you're sitting in several mils due to this terminal, don't forget to report a [bug](https://github.com/DidierRLopes/GamestonkTerminal/issues) so that the team can fix, and keep the old ways.
+Also, if somehow you're sitting in several mils due to this terminal, don't forget to report a [bug](https://github.com/GamestonkTerminal/GamestonkTerminal/issues) so that the team can fix, and keep the old ways.
 
 
 **Join the 🙌 💎 Gang**
@@ -347,7 +353,7 @@ Welcome to the club, and feel free to support the developers behind this amazing
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/DidierRLopes/GamestonkTerminal/blob/main/LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/GamestonkTerminal/GamestonkTerminal/blob/main/LICENSE) for more information.
 
 ## Disclaimer
 
@@ -368,19 +374,21 @@ Feel free to share loss porn, memes or any questions at:
 * Twitter: [@gamestonkt](https://twitter.com/gamestonkt)
 
 
-#### Shoutout to:
-* **pll_llq** and **hinxx** : Working towards a GUI using Qt.
+#### Contributors
+
+* **pll_llq** and **Chavithra**: Working towards a GUI using Qt.
   * Get in touch in our [#gui](https://discord.gg/gQ3VxXEj) discord channel.
-* **1lluz10n**, **crspy**, and **martiaaz** : Working on our landing page https://gamestonkterminal.vercel.app.
+* **1lluz10n** and **crspy** : Working on our landing page https://gamestonkterminal.netlify.app.
   * Get in touch in our [#landing-page](https://discord.gg/wkyB4xcb) discord channel.
 * **Meghan Hone** : Managing Twitter account
 * **alokan** : Responsible by developing `Forex` menu
 * **Chavithra** and **Deel18** : for Degiro's integration.
 * **Traceabl3** : By adding several preset screeners
+* **jpp** : Responsible by developing `Crypto` menu
 
-#### Other Contributors
-
-cclauss, shadycuz, lolrenx, buzzCraft, clothespin, arcutright, jperkins12, nodesocket, akx, sigaloid, pchaganti, danielorf, henrytdsimmons, RowanHarley, sabujp, qTipTip, gmerrall, bfxavier, donno2048, noufal85, rmassoth, benkulbertis, ricleal-fugue, sandsturm, breck7, derrickknox, daxxog, Felixkruemel, gvikei, backhand, ntoscano, nickodell, grvsaxena419, priteshkeleven, kaitj
+<a href="https://github.com/GamestonkTerminal/GamestonkTerminal/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=GamestonkTerminal/GamestonkTerminal" height="276"/>
+</a>
 
 ## Acknowledgments
 
@@ -390,23 +398,25 @@ cclauss, shadycuz, lolrenx, buzzCraft, clothespin, arcutright, jperkins12, nodes
 * [Reddit r/algotrading - Gamestonk Terminal: The next best thing after Bloomberg Terminal.](https://www.reddit.com/r/algotrading/comments/m4uvza/gamestonk_terminal_the_next_best_thing_after/)
 * [Reddit r/Python - Gamestonk Terminal: The equivalent to an open-source python Bloomberg Terminal.](https://www.reddit.com/r/Python/comments/m515yk/gamestonk_terminal_the_equivalent_to_an/)
 * [Reddit r/Superstonk - Move over Bloomberg Terminal, here comes Gamestonk Terminal](https://www.reddit.com/r/Superstonk/comments/mx2cjh/move_over_bloomberg_terminal_here_comes_gamestonk/)
+* [Spotlight: Didier Lopes. Creator of Gamestonk Terminal](https://deepsource.io/spotlight/didier-lopes/)
+* [Reddit r/Superstonk - Gamestonk Terminal - We are very much alive](https://www.reddit.com/r/Superstonk/comments/o502i8/gamestonk_terminal_we_are_very_much_alive/)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/DidierRLopes/GamestonkTerminal.svg?style=for-the-badge
-[contributors-url]: https://github.com/DidierRLopes/GamestonkTerminal/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/DidierRLopes/GamestonkTerminal.svg?style=for-the-badge
-[forks-url]: https://github.com/DidierRLopes/GamestonkTerminal/network/members
-[stars-shield]: https://img.shields.io/github/stars/DidierRLopes/GamestonkTerminal.svg?style=for-the-badge
-[stars-url]: https://github.com/DidierRLopes/GamestonkTerminal/stargazers
-[issues-shield]: https://img.shields.io/github/issues/DidierRLopes/GamestonkTerminal.svg?style=for-the-badge&color=blue
-[issues-url]: https://github.com/DidierRLopes/GamestonkTerminal/issues
-[bugs-open-shield]: https://img.shields.io/github/issues/DidierRLopes/GamestonkTerminal/type%3Abug.svg?style=for-the-badge&color=yellow
-[bugs-open-url]: https://github.com/DidierRLopes/GamestonkTerminal/issues?q=is%3Aissue+label%3Atype%3Abug+is%3Aopen
-[bugs-closed-shield]: https://img.shields.io/github/issues-closed/DidierRLopes/GamestonkTerminal/type%3Abug.svg?style=for-the-badge&color=success
-[bugs-closed-url]: https://github.com/DidierRLopes/GamestonkTerminal/issues?q=is%3Aissue+label%3Atype%3Abug+is%3Aclosed
-[license-shield]: https://img.shields.io/github/license/DidierRLopes/GamestonkTerminal.svg?style=for-the-badge
-[license-url]: https://github.com/DidierRLopes/GamestonkTerminal/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/GamestonkTerminal/GamestonkTerminal.svg?style=for-the-badge
+[contributors-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/GamestonkTerminal/GamestonkTerminal.svg?style=for-the-badge
+[forks-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/network/members
+[stars-shield]: https://img.shields.io/github/stars/GamestonkTerminal/GamestonkTerminal.svg?style=for-the-badge
+[stars-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/stargazers
+[issues-shield]: https://img.shields.io/github/issues/GamestonkTerminal/GamestonkTerminal.svg?style=for-the-badge&color=blue
+[issues-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/issues
+[bugs-open-shield]: https://img.shields.io/github/issues/GamestonkTerminal/GamestonkTerminal/type%3Abug.svg?style=for-the-badge&color=yellow
+[bugs-open-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/issues?q=is%3Aissue+label%3Atype%3Abug+is%3Aopen
+[bugs-closed-shield]: https://img.shields.io/github/issues-closed/GamestonkTerminal/GamestonkTerminal/type%3Abug.svg?style=for-the-badge&color=success
+[bugs-closed-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/issues?q=is%3Aissue+label%3Atype%3Abug+is%3Aclosed
+[license-shield]: https://img.shields.io/github/license/GamestonkTerminal/GamestonkTerminal.svg?style=for-the-badge
+[license-url]: https://github.com/GamestonkTerminal/GamestonkTerminal/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/DidierRLopes

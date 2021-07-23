@@ -2,11 +2,16 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 from typing import List
 import requests
 import pandas as pd
 from tabulate import tabulate
-from gamestonk_terminal.helper_funcs import parse_known_args_and_warn, check_positive
+from gamestonk_terminal.helper_funcs import (
+    parse_known_args_and_warn,
+    check_positive,
+    export_data,
+)
 
 
 def darkshort(other_args: List[str]):
@@ -21,6 +26,7 @@ def darkshort(other_args: List[str]):
     parser = argparse.ArgumentParser(
         prog="darkshort",
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Get dark pool short positions. [Source: Stockgrid]",
     )
     parser.add_argument(
@@ -50,22 +56,37 @@ def darkshort(other_args: List[str]):
         dest="ascending",
         help="Data in ascending order",
     )
+    parser.add_argument(
+        "--export",
+        choices=["csv", "json", "xlsx"],
+        default="",
+        dest="export",
+        help="Export dataframe data to csv,json,xlsx file",
+    )
 
     try:
         ns_parser = parse_known_args_and_warn(parser, other_args)
         if not ns_parser:
             return
 
-        d_fields = {
-            "sv": "Short Volume",
-            "sv_pct": "Short Volume %",
-            "nsv": "Net Short Volume",
-            "nsv_dollar": "Net Short Volume $",
-            "dpp": "Dark Pools Position",
-            "dpp_dollar": "Dark Pools Position $",
+        d_fields_endpoints = {
+            "sv": "Short+Volume",
+            "sv_pct": "Short+Volume+%25",
+            "nsv": "Net+Short+Volume",
+            "nsv_dollar": "Net+Short+Volume+$",
+            "dpp": "Dark+Pools+Position",
+            "dpp_dollar": "Dark+Pools+Position+$",
         }
 
-        link = "https://stockgridapp.herokuapp.com/get_dark_pool_data?top=Dark+Pools+Position+$&minmax=desc"
+        field = d_fields_endpoints[ns_parser.sort_field]
+
+        if ns_parser.ascending:
+            order = "asc"
+        else:
+            order = "desc"
+
+        link = f"https://stockgridapp.herokuapp.com/get_dark_pool_data?top={field}&minmax={order}"
+
         response = requests.get(link)
         df = pd.DataFrame(response.json()["data"])
 
@@ -80,7 +101,7 @@ def darkshort(other_args: List[str]):
                 "Dark Pools Position",
                 "Dark Pools Position $",
             ]
-        ].sort_values(by=d_fields[ns_parser.sort_field], ascending=ns_parser.ascending)
+        ]
         dp_date = df["Date"].values[0]
         df = df.drop(columns=["Date"])
         df["Net Short Volume $"] = df["Net Short Volume $"] / 100_000_000
@@ -98,6 +119,7 @@ def darkshort(other_args: List[str]):
             "DP Position (1M)",
             "DP Position ($1B)",
         ]
+
         # Assuming that the datetime is the same, which from my experiments seems to be the case
         print(f"The following data corresponds to the date: {dp_date}")
         print(
@@ -109,8 +131,15 @@ def darkshort(other_args: List[str]):
                 showindex=False,
             )
         )
-
         print("")
+
+        export_data(
+            ns_parser.export,
+            os.path.dirname(os.path.abspath(__file__)),
+            "darkshort",
+            df,
+        )
+
     except Exception as e:
         print(e, "\n")
 
@@ -126,6 +155,7 @@ def shortvol(other_args: List[str]):
     parser = argparse.ArgumentParser(
         prog="shortvol",
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description="Print short interest and days to cover. [Source: Stockgrid]",
     )
     parser.add_argument(
@@ -144,6 +174,13 @@ def shortvol(other_args: List[str]):
         choices=["float", "dtc", "si"],
         default="float",
         dest="sort_field",
+    )
+    parser.add_argument(
+        "--export",
+        choices=["csv", "json", "xlsx"],
+        default="",
+        dest="export",
+        help="Export dataframe data to csv,json,xlsx file",
     )
 
     try:
@@ -191,6 +228,13 @@ def shortvol(other_args: List[str]):
             )
         )
         print("")
+
+        export_data(
+            ns_parser.export,
+            os.path.dirname(os.path.abspath(__file__)),
+            "shortvol",
+            df,
+        )
 
     except Exception as e:
         print(e, "\n")

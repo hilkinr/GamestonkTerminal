@@ -34,9 +34,9 @@ def sentiment_compare(other_args: List[str], ticker: str, similar: List[str]):
     similar : List[str]
         Similar companies to compare income with
     """
-
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="sentiment_compare",
         description="""
             FinBrain's sentiment comparison across similar tickers.
@@ -80,12 +80,10 @@ def sentiment_compare(other_args: List[str], ticker: str, similar: List[str]):
 
         if not df_sentiment.empty:
             plot_sentiments(df_sentiment, l_similar)
-
         print("")
 
     except Exception as e:
         print(e, "\n")
-        return
 
 
 def sentiment_correlation(other_args: List[str], ticker: str, similar: List[str]):
@@ -100,9 +98,9 @@ def sentiment_correlation(other_args: List[str], ticker: str, similar: List[str]
     similar : List[str]
         Similar companies to compare income with
     """
-
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="sentiment_compare",
         description="""
             FinBrain's sentiment correlation across similar tickers.
@@ -146,12 +144,10 @@ def sentiment_correlation(other_args: List[str], ticker: str, similar: List[str]
 
         if not df_sentiment.empty:
             plot_correlation(df_sentiment, l_similar)
-
         print("")
 
     except Exception as e:
         print(e, "\n")
-        return
 
 
 def get_sentiments(similar: List[str]) -> pd.DataFrame:
@@ -169,6 +165,7 @@ def get_sentiments(similar: List[str]) -> pd.DataFrame:
     """
 
     df_sentiment = pd.DataFrame()
+    dates_sentiment = list()
     for ticker in similar:
         result = requests.get(f"https://api.finbrain.tech/v0/sentiments/{ticker}")
         if result.status_code == 200:
@@ -177,14 +174,17 @@ def get_sentiments(similar: List[str]) -> pd.DataFrame:
                     float(val)
                     for val in list(result.json()["sentimentAnalysis"].values())
                 ]
+                dates_sentiment = list(result.json()["sentimentAnalysis"].keys())
             else:
                 print(f"Unexpected data format from FinBrain API for {ticker}")
+                similar.remove(ticker)
 
         else:
             print(f"Request error in retrieving {ticker} sentiment from FinBrain API")
+            similar.remove(ticker)
 
     if not df_sentiment.empty:
-        df_sentiment.index = list(result.json()["sentimentAnalysis"].keys())
+        df_sentiment.index = dates_sentiment
         df_sentiment.sort_index(ascending=True, inplace=True)
 
     return df_sentiment
@@ -200,7 +200,6 @@ def plot_sentiments(df_sentiment: pd.DataFrame, similar: List[str]):
     similar : List[str]
         List of similar companies
     """
-
     plt.figure(figsize=plot_autoscale(), dpi=PLOT_DPI)
 
     for idx, ticker in enumerate(similar):
@@ -256,7 +255,6 @@ def plot_correlation(df_sentiment: pd.DataFrame, similar: List[str]):
     similar : List[str]
         List of similar companies
     """
-
     plt.figure(figsize=plot_autoscale(), dpi=PLOT_DPI)
 
     mask = np.zeros((len(similar), len(similar)), dtype=bool)

@@ -2,6 +2,7 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 import random
 from typing import List
 from datetime import datetime
@@ -27,6 +28,8 @@ class ComparisonAnalysisController:
 
     # Command choices
     CHOICES = [
+        "?",
+        "cls",
         "help",
         "q",
         "quit",
@@ -84,6 +87,9 @@ class ComparisonAnalysisController:
 
     def print_help(self):
         """Print help"""
+        print(
+            "https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/comparison_analysis"
+        )
 
         s_intraday = (f"Intraday {self.interval}", "Daily")[self.interval == "1440min"]
 
@@ -98,7 +104,8 @@ class ComparisonAnalysisController:
             print(f"[{self.user}] Similar Companies: {', '.join(self.similar)}")
 
         print("\nComparison Analysis Mode:")
-        print("   help          show this comparison analysis menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("")
@@ -122,7 +129,7 @@ class ComparisonAnalysisController:
         print("")
 
         if self.similar:
-            print("   > po          portfolio optimization for selected tickers")
+            print(">  po          portfolio optimization for selected tickers")
             print("")
         return
 
@@ -136,6 +143,7 @@ class ComparisonAnalysisController:
         """
         parser = argparse.ArgumentParser(
             add_help=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
             prog="get",
             description="""Get similar companies to compare with.""",
         )
@@ -220,12 +228,10 @@ class ComparisonAnalysisController:
 
             if self.similar:
                 print(f"[{self.user}] Similar Companies: {', '.join(self.similar)}")
+            print("")
 
         except Exception as e:
-            print(e)
-
-        print("")
-        return
+            print(e, "\n")
 
     def select_similar_companies(self, other_args: List[str]):
         """Select similar companies, e.g. NIO,XPEV,LI
@@ -235,9 +241,9 @@ class ComparisonAnalysisController:
         other_args : List[str]
             argparse other args
         """
-
         parser = argparse.ArgumentParser(
             add_help=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
             prog="select",
             description="""Select similar companies to compare with.""",
         )
@@ -262,11 +268,10 @@ class ComparisonAnalysisController:
 
             self.similar = ns_parser.l_similar
             self.user = "User"
+            print("")
 
         except Exception as e:
-            print(e)
-
-        print("")
+            print(e, "\n")
 
     def switch(self, an_input: str):
         """Process and dispatch input
@@ -278,7 +283,23 @@ class ComparisonAnalysisController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.ca_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"

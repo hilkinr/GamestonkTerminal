@@ -2,6 +2,7 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 from typing import List
 from datetime import datetime
 import pandas as pd
@@ -18,6 +19,8 @@ class EdaController:
 
     # Command choices
     CHOICES = [
+        "?",
+        "cls",
         "help",
         "q",
         "quit",
@@ -52,7 +55,10 @@ class EdaController:
 
     def print_help(self):
         """Print help"""
-
+        print(
+            "https://github.com/GamestonkTerminal/"
+            "GamestonkTerminal/tree/main/gamestonk_terminal/exploratory_data_analysis"
+        )
         s_intraday = (f"Intraday {self.interval}", "Daily")[self.interval == "1440min"]
 
         if self.start:
@@ -63,7 +69,8 @@ class EdaController:
             print(f"\n{s_intraday} Stock: {self.ticker}")
 
         print("\nExploratory Data Analysis:")
-        print("   help          show this comparison analysis menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("")
@@ -89,7 +96,23 @@ class EdaController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.stats_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"
@@ -117,7 +140,9 @@ class EdaController:
 
     def call_cdf(self, other_args: List[str]):
         """Process cdf command"""
-        eda_api.cdf(other_args, self.ticker, self.stock, self.start)
+        eda_api.cumulative_distribution_function(
+            other_args, self.ticker, self.stock, self.start
+        )
 
     def call_bwy(self, other_args: List[str]):
         """Process bwy command"""
@@ -137,7 +162,7 @@ class EdaController:
 
     def call_cusum(self, other_args: List[str]):
         """Process cusum command"""
-        eda_api.cusum(other_args, self.ticker, self.stock)
+        eda_api.cusum(other_args, self.stock)
 
     def call_acf(self, other_args: List[str]):
         """Process acf command"""

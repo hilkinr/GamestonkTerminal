@@ -2,6 +2,7 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 from typing import List
 from datetime import datetime
 import pandas as pd
@@ -19,6 +20,8 @@ class ResidualsController:
 
     # Command choices
     CHOICES = [
+        "cls",
+        "?",
         "help",
         "q",
         "quit",
@@ -46,7 +49,7 @@ class ResidualsController:
         self.ticker = ticker
         self.start = start
         self.interval = interval
-        self.stock = stock["5. adjusted close"]
+        self.stock = stock["Adj Close"]
 
         self.model_name: str = "None"
         self.model: pd.Series = None
@@ -60,7 +63,9 @@ class ResidualsController:
 
     def print_help(self):
         """Print help"""
-
+        print(
+            "https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/residuals_analysis"
+        )
         s_intraday = (f"Intraday {self.interval}", "Daily")[self.interval == "1440min"]
 
         if self.start:
@@ -73,7 +78,8 @@ class ResidualsController:
         print(f"\nModel fit: {self.model_name}")
 
         print("\nResiduals Analysis:")
-        print("   help          show this comparison analysis menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("   pick          pick one of the model fitting.")
@@ -144,6 +150,8 @@ class ResidualsController:
                     other_args[2:], self.stock
                 )
 
+            self.print_help()
+
         except Exception as e:
             print(e)
 
@@ -159,7 +167,23 @@ class ResidualsController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.ra_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"

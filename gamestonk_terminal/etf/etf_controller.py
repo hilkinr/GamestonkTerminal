@@ -2,6 +2,7 @@
 __docformat__ = "numpy"
 
 import argparse
+import os
 from typing import List
 import matplotlib.pyplot as plt
 from prompt_toolkit.completion import NestedCompleter
@@ -15,10 +16,27 @@ from gamestonk_terminal.etf.stockanalysis_model import (
     compare_etfs,
     etf_holdings,
 )
+from gamestonk_terminal.etf.screener_model import etf_screener
+from gamestonk_terminal.etf import wsj_view
 
 
 class ETFController:
-    CHOICES = ["help", "q", "quit", "web", "search", "overview", "compare", "holdings"]
+    CHOICES = [
+        "cls",
+        "?",
+        "help",
+        "q",
+        "quit",
+        "web",
+        "search",
+        "overview",
+        "compare",
+        "holdings",
+        "screener",
+        "gainers",
+        "decliners",
+        "active",
+    ]
 
     def __init__(self):
         """CONSTRUCTOR"""
@@ -28,8 +46,12 @@ class ETFController:
 
     def print_help(self):
         """Print help"""
+        print(
+            "https://github.com/GamestonkTerminal/GamestonkTerminal/tree/main/gamestonk_terminal/etf"
+        )
         print("\nETF:")
-        print("   help          show this menu again")
+        print("   cls           clear screen")
+        print("   ?/help        show this menu again")
         print("   q             quit this menu, and shows back to main menu")
         print("   quit          quit to abandon program")
         print("\nStockAnalysis.com")
@@ -38,7 +60,11 @@ class ETFController:
         print("   overview      get overview of ETF symbol")
         print("   holdings      get top holdings for ETF")
         print("   compare       compare overview of multiple ETF")
-
+        print("   screener      screen etfs based on overview data")
+        print("\n Wall St. Journal")
+        print("   gainers       show top gainers")
+        print("   decliners     show top decliners")
+        print("   active        show most active")
         print("")
 
     def switch(self, an_input: str):
@@ -51,7 +77,23 @@ class ETFController:
             True - quit the program
             None - continue in the menu
         """
+
+        # Empty command
+        if not an_input:
+            print("")
+            return None
+
         (known_args, other_args) = self.etf_parser.parse_known_args(an_input.split())
+
+        # Help menu again
+        if known_args.cmd == "?":
+            self.print_help()
+            return None
+
+        # Clear screen
+        if known_args.cmd == "cls":
+            os.system("cls||clear")
+            return None
 
         return getattr(
             self, "call_" + known_args.cmd, lambda: "Command not recognized!"
@@ -88,6 +130,22 @@ class ETFController:
     def call_compare(self, other_args):
         """Process compare command"""
         compare_etfs(other_args)
+
+    def call_screener(self, other_args):
+        """Process screener command"""
+        etf_screener(other_args)
+
+    def call_gainers(self, other_args):
+        """Process gainers command"""
+        wsj_view.show_top_mover("gainers", other_args)
+
+    def call_decliners(self, other_args):
+        """Process decliners command"""
+        wsj_view.show_top_mover("decliners", other_args)
+
+    def call_active(self, other_args):
+        """Process gainers command"""
+        wsj_view.show_top_mover("active", other_args)
 
 
 def menu():

@@ -4,6 +4,8 @@ __docformat__ = "numpy"
 import argparse
 from typing import List
 import pandas as pd
+import requests
+
 from gamestonk_terminal.helper_funcs import parse_known_args_and_warn
 
 
@@ -18,6 +20,7 @@ def gainers_view(other_args: List[str]):
 
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="gainers",
         description="Print up to 25 top ticker gainers. [Source: Yahoo Finance]",
     )
@@ -33,15 +36,19 @@ def gainers_view(other_args: List[str]):
         help="Number of the top gainers stocks to retrieve.",
     )
 
-    ns_parser = parse_known_args_and_warn(parser, other_args)
-    if not ns_parser:
-        return
+    try:
+        ns_parser = parse_known_args_and_warn(parser, other_args)
+        if not ns_parser:
+            return
 
-    df_gainers = pd.read_html(
-        "https://finance.yahoo.com/screener/predefined/day_gainers"
-    )[0]
-    print(df_gainers.head(ns_parser.n_gainers).to_string(index=False))
-    print("")
+        url = "https://finance.yahoo.com/screener/predefined/day_gainers"
+
+        df_gainers = pd.read_html(requests.get(url).text)[0]
+        print(df_gainers.head(ns_parser.n_gainers).to_string(index=False))
+        print("")
+
+    except Exception as e:
+        print(e, "\n")
 
 
 def losers_view(other_args: List[str]):
@@ -55,6 +62,7 @@ def losers_view(other_args: List[str]):
 
     parser = argparse.ArgumentParser(
         add_help=False,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         prog="losers",
         description="Print up to 25 top ticker losers. [Source: Yahoo Finance]",
     )
@@ -70,12 +78,16 @@ def losers_view(other_args: List[str]):
         help="Number of the top losers stocks to retrieve.",
     )
 
-    ns_parser = parse_known_args_and_warn(parser, other_args)
-    if not ns_parser:
-        return
+    try:
+        ns_parser = parse_known_args_and_warn(parser, other_args)
+        if not ns_parser:
+            return
 
-    df_losers = pd.read_html(
-        "https://finance.yahoo.com/screener/predefined/day_losers"
-    )[0]
-    print(df_losers.head(ns_parser.n_losers).to_string(index=False))
-    print("")
+        url = "https://finance.yahoo.com/screener/predefined/day_losers"
+
+        df_losers = pd.read_html(requests.get(url).text)[0]
+        print(df_losers.head(ns_parser.n_losers).to_string(index=False))
+        print("")
+
+    except Exception as e:
+        print(e, "\n")
